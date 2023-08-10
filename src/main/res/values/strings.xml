@@ -1,0 +1,9 @@
+<resources>
+    <string name="connect_key">tidal_connect</string>
+    <string name="connect_title">Connect</string>
+    <string name="connect_summary">Connect your Tidal account</string>
+    <string name="user_id_key">tidal_user_id</string>
+    <string name="country_code_key">tidal_country_code</string>
+    <string name="access_token_key">tidal_access_token</string>
+    <string name="refresh_token_key">tidal_refresh_token</string>
+</resources>

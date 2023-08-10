@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    namespace 'com.tiefensuche.soundcrowd.plugins.tidal'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.tiefensuche.soundcrowd.plugins.tidal"
+        minSdk 14
+        targetSdk 33
+        versionCode 1
+        versionName "0.1"
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        resValue "string", "client_id", "YOUR-CLIENT-ID"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+        }
+
+        release {
+            minifyEnabled true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation 'com.tiefensuche.soundcrowd:plugin:0.1'
+    implementation 'com.tiefensuche:tidal-kt:0.1-SNAPSHOT'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/soundcrowd/soundcrowd-plugin")
+        credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+    maven {
+        url = uri("https://maven.pkg.github.com/0xf4b1/tidal-kt")
+        credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
