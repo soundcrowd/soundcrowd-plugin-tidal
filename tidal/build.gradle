@@ -38,7 +38,7 @@ android {
 
 dependencies {
     implementation 'com.tiefensuche.soundcrowd:plugin:0.1'
-    implementation 'com.tiefensuche:tidal-kt:0.1-SNAPSHOT'
+    implementation 'com.tiefensuche:tidal-kt:0.1.2'
 }
 
 repositories {
