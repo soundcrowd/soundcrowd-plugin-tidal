@@ -13,4 +13,4 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: soundcrowd-plugin-tidal.apk
-          path: build/outputs/apk/debug/tidal-debug.apk
+          path: tidal/build/outputs/apk/debug/tidal-debug.apk
