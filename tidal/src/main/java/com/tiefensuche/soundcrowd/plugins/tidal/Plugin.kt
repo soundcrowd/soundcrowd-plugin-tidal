@@ -78,7 +78,7 @@ class Plugin(appContext: Context, val context: Context) : IPlugin {
 
         if (sharedPref.getString(context.getString(R.string.access_token_key), null) != null) {
             api.session.setAuth(
-                sharedPref.getLong(context.getString(R.string.country_code_key), 0),
+                sharedPref.getLong(context.getString(R.string.user_id_key), 0),
                 sharedPref.getString(context.getString(R.string.country_code_key), null) ?: api.session.countryCode,
                 sharedPref.getString(context.getString(R.string.access_token_key), null) ?: "",
                 sharedPref.getString(context.getString(R.string.refresh_token_key), null) ?: ""
