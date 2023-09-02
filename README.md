@@ -14,7 +14,7 @@ This soundcrowd plugin adds basic Tidal support. It allows you to listen and bro
 
 Install via ADB:
 
-    $ adb install build/outputs/apk/debug/tidal-debug.apk
+    $ adb install tidal/build/outputs/apk/debug/tidal-debug.apk
 
 ## License
 
