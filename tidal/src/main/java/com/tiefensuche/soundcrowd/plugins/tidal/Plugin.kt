@@ -19,6 +19,7 @@ import com.tiefensuche.soundcrowd.extensions.MediaMetadataCompatExt
 import com.tiefensuche.soundcrowd.plugins.Callback
 import com.tiefensuche.soundcrowd.plugins.IPlugin
 import com.tiefensuche.tidal.api.Artist
+import com.tiefensuche.tidal.api.Playlist
 import com.tiefensuche.tidal.api.Track
 
 /**
@@ -30,8 +31,8 @@ class Plugin(appContext: Context, val context: Context) : IPlugin {
         const val name = "Tidal"
         const val TRACKS = "Tracks"
         const val ARTISTS = "Artists"
-        const val DAILY = "Daily Discovery"
-        const val NEW_ARRIVALS = "New Arrivals"
+        const val PLAYLISTS = "Playlists"
+        const val MIXES = "Mixes"
     }
 
     private val icon = BitmapFactory.decodeResource(context.resources, R.drawable.plugin_icon)
@@ -89,7 +90,7 @@ class Plugin(appContext: Context, val context: Context) : IPlugin {
 
     override fun name(): String = name
 
-    override fun mediaCategories(): List<String> = listOf(TRACKS, ARTISTS, DAILY, NEW_ARRIVALS)
+    override fun mediaCategories(): List<String> = listOf(TRACKS, ARTISTS, PLAYLISTS, MIXES)
 
     override fun preferences() = listOf(connectPreference)
 
@@ -102,22 +103,8 @@ class Plugin(appContext: Context, val context: Context) : IPlugin {
         when (mediaCategory) {
             TRACKS -> callback.onResult(tracksToMediaMetadataCompat(api.getTracks(refresh)))
             ARTISTS -> callback.onResult(artistsToMediaMetadataCompat(api.getArtists(refresh)))
-            DAILY -> callback.onResult(
-                tracksToMediaMetadataCompat(
-                    api.getMix(
-                        Endpoints.Mixes.MIX_DAILY_DISCOVERY,
-                        refresh
-                    )
-                )
-            )
-            NEW_ARRIVALS -> callback.onResult(
-                tracksToMediaMetadataCompat(
-                    api.getMix(
-                        Endpoints.Mixes.MIX_NEW_ARRIVALS,
-                        refresh
-                    )
-                )
-            )
+            PLAYLISTS -> callback.onResult(playlistToMediaMetadataCompat(api.getPlaylists(refresh)))
+            MIXES -> callback.onResult(playlistToMediaMetadataCompat(api.getMixes()))
         }
     }
 
@@ -130,6 +117,8 @@ class Plugin(appContext: Context, val context: Context) : IPlugin {
     ) {
         when (mediaCategory) {
             ARTISTS -> callback.onResult(tracksToMediaMetadataCompat(api.getArtist(path.toLong(), refresh)))
+            PLAYLISTS -> callback.onResult(tracksToMediaMetadataCompat(api.getPlaylist(path, refresh)))
+            MIXES -> callback.onResult(tracksToMediaMetadataCompat(api.getMix(path, refresh)))
         }
     }
 
@@ -186,6 +175,19 @@ class Plugin(appContext: Context, val context: Context) : IPlugin {
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "")
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, it.name)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, it.artwork)
+                .putString(MediaMetadataCompatExt.METADATA_KEY_TYPE, MediaMetadataCompatExt.MediaType.STREAM.name)
+                .build()
+        }
+    }
+
+    private fun playlistToMediaMetadataCompat(playlists: List<Playlist>): List<MediaMetadataCompat> {
+        return playlists.map {
+            MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, it.uuid)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "")
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, it.title)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, it.artwork)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, it.duration)
                 .putString(MediaMetadataCompatExt.METADATA_KEY_TYPE, MediaMetadataCompatExt.MediaType.STREAM.name)
                 .build()
         }
