@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="connect_key">tidal_connect</string>
-  <string name="connect_title">接続</string>
-  <string name="connect_summary">Tidal アカウントに接続します</string>
-  <string name="user_id_key">tidal_user_id</string>
-  <string name="country_code_key">tidal_country_code</string>
-  <string name="access_token_key">tidal_access_token</string>
-  <string name="refresh_token_key">tidal_refresh_token</string>
+  <string name="tidal_connect_key">tidal_connect</string>
+  <string name="tidal_connect_title">接続</string>
+  <string name="tidal_connect_summary">Tidal アカウントに接続します</string>
+  <string name="tidal_user_id_key">tidal_user_id</string>
+  <string name="tidal_country_code_key">tidal_country_code</string>
+  <string name="tidal_access_token_key">tidal_access_token</string>
+  <string name="tidal_refresh_token_key">tidal_refresh_token</string>
 </resources>
