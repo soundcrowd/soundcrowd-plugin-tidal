@@ -29,25 +29,12 @@ android {
 }
 
 dependencies {
-    implementation 'com.tiefensuche.soundcrowd:plugin:1.0.0'
-    implementation 'com.tiefensuche:tidal-kt:0.2.0'
+    implementation 'com.github.soundcrowd:soundcrowd-plugin:v1.0.0'
+    implementation 'com.github.0xf4b1:tidal-kt:master-SNAPSHOT'
 }
 
 repositories {
     mavenCentral()
     google()
-    maven {
-        url = uri("https://maven.pkg.github.com/soundcrowd/soundcrowd-plugin")
-        credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }
-    maven {
-        url = uri("https://maven.pkg.github.com/0xf4b1/tidal-kt")
-        credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }
+    maven { url 'https://jitpack.io' }
 }
