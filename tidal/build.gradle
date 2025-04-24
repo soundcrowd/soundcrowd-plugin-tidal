@@ -30,7 +30,7 @@ android {
 
 dependencies {
     implementation 'com.github.soundcrowd:soundcrowd-plugin:v1.0.0'
-    implementation 'com.github.0xf4b1:tidal-kt:7a3ff93521'
+    implementation 'com.github.0xf4b1:tidal-kt:android-SNAPSHOT'
 }
 
 repositories {

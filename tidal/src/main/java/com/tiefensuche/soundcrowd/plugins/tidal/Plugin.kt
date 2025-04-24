@@ -95,7 +95,8 @@ class Plugin(val context: Context) : IPlugin {
 
     // FIXME: MIXES currently broken because of duplicate values in json response and android sdk
     // uses org.json that does not have JSONParserConfiguration().withOverwriteDuplicateKey
-    override fun mediaCategories(): List<String> = listOf(TRACKS, ARTISTS, PLAYLISTS/*, MIXES*/)
+    // Using workaround in tidal-kt which removes the duplicate keys for now.
+    override fun mediaCategories(): List<String> = listOf(TRACKS, ARTISTS, PLAYLISTS, MIXES)
 
     override fun preferences() = listOf(connectPreference)
 
