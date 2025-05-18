@@ -16,6 +16,7 @@ import com.tiefensuche.tidal.api.TidalApi
 import com.tiefensuche.soundcrowd.plugins.IPlugin
 import com.tiefensuche.soundcrowd.plugins.MediaItemUtils
 import com.tiefensuche.soundcrowd.plugins.MediaMetadataCompatExt
+import com.tiefensuche.tidal.api.Album
 import com.tiefensuche.tidal.api.Artist
 import com.tiefensuche.tidal.api.Playlist
 import com.tiefensuche.tidal.api.Track
@@ -29,6 +30,7 @@ class Plugin(val context: Context) : IPlugin {
         const val NAME = "Tidal"
         const val TRACKS = "Tracks"
         const val ARTISTS = "Artists"
+        const val ALBUMS = "Albums"
         const val PLAYLISTS = "Playlists"
         const val MIXES = "Mixes"
     }
@@ -96,7 +98,7 @@ class Plugin(val context: Context) : IPlugin {
     // FIXME: MIXES currently broken because of duplicate values in json response and android sdk
     // uses org.json that does not have JSONParserConfiguration().withOverwriteDuplicateKey
     // Using workaround in tidal-kt which removes the duplicate keys for now.
-    override fun mediaCategories(): List<String> = listOf(TRACKS, ARTISTS, PLAYLISTS, MIXES)
+    override fun mediaCategories(): List<String> = listOf(TRACKS, ARTISTS, ALBUMS, PLAYLISTS, MIXES)
 
     override fun preferences() = listOf(connectPreference)
 
@@ -109,6 +111,7 @@ class Plugin(val context: Context) : IPlugin {
         return when (mediaCategory) {
             TRACKS -> tracksToMediaMetadataCompat(api.getTracks(refresh))
             ARTISTS -> artistsToMediaMetadataCompat(api.getArtists(refresh))
+            ALBUMS -> albumsToMediaMetadataCompat(api.getAlbums(refresh))
             PLAYLISTS -> playlistToMediaMetadataCompat(api.getPlaylists(refresh))
             MIXES -> playlistToMediaMetadataCompat(api.getMixes())
             else -> emptyList()
@@ -123,6 +126,7 @@ class Plugin(val context: Context) : IPlugin {
     ) : List<MediaItem> {
         return when (mediaCategory) {
             ARTISTS -> tracksToMediaMetadataCompat(api.getArtist(path.toLong(), refresh))
+            ALBUMS -> tracksToMediaMetadataCompat(api.getAlbum(path.toLong(), refresh))
             PLAYLISTS -> tracksToMediaMetadataCompat(api.getPlaylist(path, refresh))
             MIXES -> tracksToMediaMetadataCompat(api.getMix(path, refresh))
             else -> emptyList()
@@ -172,6 +176,18 @@ class Plugin(val context: Context) : IPlugin {
                 it.id.toString(),
                 it.name,
                 MediaMetadataCompatExt.MediaType.STREAM,
+                artworkUri = Uri.parse(it.artwork)
+            )
+        }
+    }
+
+    private fun albumsToMediaMetadataCompat(artists: List<Album>): List<MediaItem> {
+        return artists.map {
+            MediaItemUtils.createBrowsableItem(
+                it.id.toString(),
+                it.name,
+                MediaMetadataCompatExt.MediaType.STREAM,
+                it.artist,
                 artworkUri = Uri.parse(it.artwork)
             )
         }
