@@ -40,6 +40,7 @@ class Plugin(val context: Context) : IPlugin {
     private var api = TidalApi(
         TidalApi.Session(
             context.getString(R.string.tidal_client_id),
+            context.getString(R.string.tidal_client_secret),
             ::sessionCallback
         )
     )
@@ -147,7 +148,7 @@ class Plugin(val context: Context) : IPlugin {
     override fun getMediaUri(
         mediaItem: MediaItem,
     ) : Uri {
-        return Uri.parse(api.getStreamUrl(mediaItem.requestMetadata.mediaUri.toString().toLong()))
+        return Uri.parse(api.getStreamManifest(mediaItem.requestMetadata.mediaUri.toString().toLong()))
     }
 
     override fun favorite(id: String): Boolean {

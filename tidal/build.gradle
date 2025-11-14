@@ -6,11 +6,12 @@ plugins {
 android {
     defaultConfig {
         namespace 'com.tiefensuche.soundcrowd.plugins.tidal'
-        compileSdk 35
+        compileSdk 36
         minSdk 21
-        targetSdk 35
+        targetSdk 36
 
         resValue "string", "tidal_client_id", "YOUR-CLIENT-ID"
+        resValue "string", "tidal_client_secret", "YOUR-CLIENT-SECRET"
     }
 
     buildTypes {
@@ -30,7 +31,7 @@ android {
 
 dependencies {
     implementation 'com.github.soundcrowd:soundcrowd-plugin:v1.0.0'
-    implementation 'com.github.0xf4b1:tidal-kt:android-SNAPSHOT'
+    implementation 'com.github.0xf4b1:tidal-kt:v0.3.1'
 }
 
 repositories {
