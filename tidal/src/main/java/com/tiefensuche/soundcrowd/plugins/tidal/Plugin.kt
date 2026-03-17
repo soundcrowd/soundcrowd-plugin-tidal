@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
+import android.widget.Toast
 import androidx.media3.common.HeartRating
 import androidx.media3.common.MediaItem
 import androidx.preference.Preference
@@ -20,6 +21,7 @@ import com.tiefensuche.tidal.api.Album
 import com.tiefensuche.tidal.api.Artist
 import com.tiefensuche.tidal.api.Playlist
 import com.tiefensuche.tidal.api.Track
+import androidx.core.net.toUri
 
 /**
  * Tidal plugin for soundcrowd
@@ -54,28 +56,8 @@ class Plugin(val context: Context) : IPlugin {
         connectPreference.summary = context.getString(R.string.tidal_connect_summary)
         connectPreference.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
             if (newValue == true) {
-                AsyncTask.execute {
-                    val verificationUriComplete = api.auth()
-                    val intent = Intent(
-                        Intent.ACTION_VIEW, Uri.parse("https://$verificationUriComplete")
-                    )
-                    intent.flags = FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
-
-                    for (i in 0..30) {
-                        try {
-                            if (api.getAccessToken()) {
-                                println("Auth complete")
-                                break
-                            }
-                        } catch (ex: Exception) {
-                            println(ex.message)
-                        }
-                        println("Auth pending...")
-                        Thread.sleep(5_000)
-                    }
-                }
-                true
+                RequestAccessTokenTask(this).execute()
+                false
             } else {
                 sharedPref.edit().putString(context.getString(R.string.tidal_access_token_key), null)
                     .putString(context.getString(R.string.tidal_refresh_token_key), null).apply()
@@ -91,6 +73,45 @@ class Plugin(val context: Context) : IPlugin {
                 sharedPref.getString(context.getString(R.string.tidal_refresh_token_key), null) ?: ""
             )
             connectPreference.isChecked = true
+        }
+    }
+
+    private class RequestAccessTokenTask(private val plugin: Plugin) : AsyncTask<Void, Void, Boolean>() {
+        override fun doInBackground(vararg p0: Void): Boolean {
+            try {
+                val verificationUriComplete = plugin.api.auth()
+                val intent = Intent(
+                    Intent.ACTION_VIEW, "https://$verificationUriComplete".toUri()
+                )
+                intent.flags = FLAG_ACTIVITY_NEW_TASK
+                plugin.context.startActivity(intent)
+
+                for (i in 0..30) {
+                    try {
+                        if (plugin.api.getAccessToken()) {
+                            println("Auth complete")
+                            return true
+                        }
+                    } catch (_: Exception) {
+                        // throws Exception while app is in background
+                    }
+                    println("Auth pending...")
+                    Thread.sleep(5_000)
+                }
+            } catch (_: Exception) {
+            }
+            return false
+        }
+
+        override fun onPostExecute(result: Boolean) {
+            if (!result) {
+                Toast.makeText(
+                    plugin.context,
+                    "Authorization failed",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            plugin.connectPreference.isChecked = result
         }
     }
 
@@ -148,7 +169,7 @@ class Plugin(val context: Context) : IPlugin {
     override fun getMediaUri(
         mediaItem: MediaItem,
     ) : Uri {
-        return Uri.parse(api.getStreamManifest(mediaItem.requestMetadata.mediaUri.toString().toLong()))
+        return Uri.parse(api.getStreamUrl(mediaItem.requestMetadata.mediaUri.toString().toLong()))
     }
 
     override fun favorite(id: String): Boolean {
